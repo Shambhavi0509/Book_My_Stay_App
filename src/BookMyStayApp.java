@@ -1,51 +1,72 @@
-import java.util.HashMap;
-
 public class BookMyStayApp {
 
-    // Centralized inventory using HashMap
-    static HashMap<String, Integer> inventory = new HashMap<>();
+    // ABSTRACT ROOM CLASS
+    static abstract class Room {
 
-    // Initialize room availability
-    public static void initializeInventory() {
-        inventory.put("Single Room", 10);
-        inventory.put("Double Room", 5);
-        inventory.put("Suite Room", 2);
+        protected int numberOfBeds;
+        protected int squareFeet;
+        protected double pricePerNight;
+
+        public Room(int beds, int size, double price) {
+            this.numberOfBeds = beds;
+            this.squareFeet = size;
+            this.pricePerNight = price;
+        }
+
+        public void displayRoomDetails() {
+            System.out.println("Beds: " + numberOfBeds);
+            System.out.println("Size: " + squareFeet + " sqft");
+            System.out.println("Price per night: " + pricePerNight);
+        }
     }
 
-    // Get availability
-    public static int getAvailability(String roomType) {
-        return inventory.getOrDefault(roomType, 0);
+    // SINGLE ROOM
+    static class SingleRoom extends Room {
+
+        public SingleRoom() {
+            super(1, 250, 1500.0);
+        }
     }
 
-    // Update availability
-    public static void updateAvailability(String roomType, int newCount) {
-        inventory.put(roomType, newCount);
+    // DOUBLE ROOM
+    static class DoubleRoom extends Room {
+
+        public DoubleRoom() {
+            super(2, 400, 2500.0);
+        }
     }
 
-    // Display inventory
-    public static void displayInventory() {
-        System.out.println("=== Current Room Inventory ===");
+    // SUITE ROOM
+    static class SuiteRoom extends Room {
 
-        for (String room : inventory.keySet()) {
-            System.out.println(room + " : " + inventory.get(room));
+        public SuiteRoom() {
+            super(3, 750, 5000.0);
         }
     }
 
     public static void main(String[] args) {
 
-        // Initialize inventory
-        initializeInventory();
+        // Availability variables (still static in UC2)
+        int singleAvailability = 5;
+        int doubleAvailability = 3;
+        int suiteAvailability = 2;
 
-        // Display inventory
-        displayInventory();
+        System.out.println("Hotel Room Initialization\n");
 
-        // Check availability
-        System.out.println("\nSingle Room Available: " + getAvailability("Single Room"));
+        Room single = new SingleRoom();
+        Room doubleRoom = new DoubleRoom();
+        Room suite = new SuiteRoom();
 
-        // Update availability
-        updateAvailability("Single Room", 8);
+        System.out.println("Single Room:");
+        single.displayRoomDetails();
+        System.out.println("Available: " + singleAvailability + "\n");
 
-        System.out.println("\nUpdated Inventory:");
-        displayInventory();
+        System.out.println("Double Room:");
+        doubleRoom.displayRoomDetails();
+        System.out.println("Available: " + doubleAvailability + "\n");
+
+        System.out.println("Suite Room:");
+        suite.displayRoomDetails();
+        System.out.println("Available: " + suiteAvailability);
     }
 }
