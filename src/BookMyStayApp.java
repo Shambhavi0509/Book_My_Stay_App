@@ -1,42 +1,72 @@
 public class BookMyStayApp {
 
+    // ABSTRACT ROOM CLASS
+    static abstract class Room {
+
+        protected int numberOfBeds;
+        protected int squareFeet;
+        protected double pricePerNight;
+
+        public Room(int beds, int size, double price) {
+            this.numberOfBeds = beds;
+            this.squareFeet = size;
+            this.pricePerNight = price;
+        }
+
+        public void displayRoomDetails() {
+            System.out.println("Beds: " + numberOfBeds);
+            System.out.println("Size: " + squareFeet + " sqft");
+            System.out.println("Price per night: " + pricePerNight);
+        }
+    }
+
+    // SINGLE ROOM
+    static class SingleRoom extends Room {
+
+        public SingleRoom() {
+            super(1, 250, 1500.0);
+        }
+    }
+
+    // DOUBLE ROOM
+    static class DoubleRoom extends Room {
+
+        public DoubleRoom() {
+            super(2, 400, 2500.0);
+        }
+    }
+
+    // SUITE ROOM
+    static class SuiteRoom extends Room {
+
+        public SuiteRoom() {
+            super(3, 750, 5000.0);
+        }
+    }
+
     public static void main(String[] args) {
 
-        // Room attributes
-        String singleRoomType = "Single Room";
-        int singleBeds = 1;
-        double singlePrice = 2000;
-
-        String doubleRoomType = "Double Room";
-        int doubleBeds = 2;
-        double doublePrice = 3500;
-
-        String suiteRoomType = "Suite Room";
-        int suiteBeds = 3;
-        double suitePrice = 6000;
-
-        // Static availability variables
-        int singleAvailability = 10;
-        int doubleAvailability = 5;
+        // Availability variables (still static in UC2)
+        int singleAvailability = 5;
+        int doubleAvailability = 3;
         int suiteAvailability = 2;
 
-        System.out.println("=== Room Details ===");
+        System.out.println("Hotel Room Initialization\n");
 
-        System.out.println("\nRoom Type: " + singleRoomType);
-        System.out.println("Beds: " + singleBeds);
-        System.out.println("Price: " + singlePrice);
-        System.out.println("Available: " + singleAvailability);
+        Room single = new SingleRoom();
+        Room doubleRoom = new DoubleRoom();
+        Room suite = new SuiteRoom();
 
-        System.out.println("\nRoom Type: " + doubleRoomType);
-        System.out.println("Beds: " + doubleBeds);
-        System.out.println("Price: " + doublePrice);
-        System.out.println("Available: " + doubleAvailability);
+        System.out.println("Single Room:");
+        single.displayRoomDetails();
+        System.out.println("Available: " + singleAvailability + "\n");
 
-        System.out.println("\nRoom Type: " + suiteRoomType);
-        System.out.println("Beds: " + suiteBeds);
-        System.out.println("Price: " + suitePrice);
+        System.out.println("Double Room:");
+        doubleRoom.displayRoomDetails();
+        System.out.println("Available: " + doubleAvailability + "\n");
+
+        System.out.println("Suite Room:");
+        suite.displayRoomDetails();
         System.out.println("Available: " + suiteAvailability);
-
-        System.out.println("\nApplication Finished.");
     }
 }
