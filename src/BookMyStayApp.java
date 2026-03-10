@@ -1,93 +1,62 @@
-import java.util.Queue;
-import java.util.LinkedList;
+import java.util.*;
 
 public class BookMyStayApp {
 
     /*
      ==========================================
-     CLASS - Reservation
+     CLASS - RoomAllocationService
      ==========================================
-     Represents a booking request made by a guest
+     Handles reservation confirmation and room
+     allocation while updating inventory.
      */
 
-    static class Reservation {
+    static class RoomAllocationService {
 
-        private String guestName;
-        private String roomType;
+        // Store all allocated room IDs
+        private Set<String> allocatedRoomIds;
 
-        public Reservation(String guestName, String roomType) {
-            this.guestName = guestName;
-            this.roomType = roomType;
+        // Store allocated rooms by room type
+        private Map<String, Set<String>> assignedRoomsByType;
+
+        public RoomAllocationService() {
+            allocatedRoomIds = new HashSet<>();
+            assignedRoomsByType = new HashMap<>();
         }
 
-        public String getGuestName() {
-            return guestName;
+        public void allocateRoom(Reservation reservation, RoomInventory inventory) {
+
+            String roomType = reservation.getRoomType();
+            Map<String, Integer> availability = inventory.getRoomAvailability();
+
+            if (!availability.containsKey(roomType) || availability.get(roomType) == 0) {
+                System.out.println("No available rooms for " + roomType);
+                return;
+            }
+
+            String roomId = generateRoomId(roomType);
+
+            allocatedRoomIds.add(roomId);
+
+            assignedRoomsByType
+                    .computeIfAbsent(roomType, k -> new HashSet<>())
+                    .add(roomId);
+
+            availability.put(roomType, availability.get(roomType) - 1);
+
+            System.out.println("Reservation Confirmed for: " + reservation.getGuestName());
+            System.out.println("Room Type: " + roomType);
+            System.out.println("Assigned Room ID: " + roomId);
+            System.out.println("--------------------------------");
         }
 
-        public String getRoomType() {
-            return roomType;
+        private String generateRoomId(String roomType) {
+
+            String prefix = roomType.substring(0, 1).toUpperCase();
+
+            int number = allocatedRoomIds.size() + 1;
+
+            return prefix + number;
         }
     }
 
-
-    /*
-     ==========================================
-     CLASS - BookingRequestQueue
-     ==========================================
-     Handles booking requests using FIFO queue
-     */
-
-    static class BookingRequestQueue {
-
-        private Queue<Reservation> requestQueue;
-
-        public BookingRequestQueue() {
-            requestQueue = new LinkedList<>();
-        }
-
-        public void addRequest(Reservation reservation) {
-            requestQueue.offer(reservation);
-        }
-
-        public Reservation getNextRequest() {
-            return requestQueue.poll();
-        }
-
-        public boolean hasPendingRequests() {
-            return !requestQueue.isEmpty();
-        }
-    }
-
-
-    /*
-     ==========================================
-     UC5 MAIN LOGIC
-     ==========================================
-     */
-
-    public static void main(String[] args) {
-
-        System.out.println("Booking Request Queue");
-
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
-
-        Reservation r1 = new Reservation("Abhi", "Single");
-        Reservation r2 = new Reservation("Subha", "Double");
-        Reservation r3 = new Reservation("Vanmathi", "Suite");
-
-        bookingQueue.addRequest(r1);
-        bookingQueue.addRequest(r2);
-        bookingQueue.addRequest(r3);
-
-        System.out.println("\nProcessing Requests (FIFO):");
-
-        while (bookingQueue.hasPendingRequests()) {
-
-            Reservation next = bookingQueue.getNextRequest();
-
-            System.out.println("Guest: " + next.getGuestName());
-            System.out.println("Requested Room: " + next.getRoomType());
-            System.out.println("-----------------------");
-        }
-    }
 }
